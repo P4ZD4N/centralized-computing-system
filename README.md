@@ -1,3 +1,3 @@
-# 💻 Distributed Averaging System
+# 💻 Centralized Computing System
 
 ## 👀 About
