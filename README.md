@@ -1,0 +1,3 @@
+# 💻 Distributed Averaging System
+
+## 👀 About
