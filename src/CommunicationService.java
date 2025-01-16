@@ -5,6 +5,13 @@ import java.net.Socket;
 public class CommunicationService extends Thread {
 
     private final int port;
+    private static int numberOfComputedOperations;
+    private static int numberOfAddOperations;
+    private static int numberOfSubOperations;
+    private static int numberOfMulOperations;
+    private static int numberOfDivOperations;
+    private static int numberOfWrongOperations;
+    private static int sumOfAllResults;
 
     public CommunicationService(int port) {
         this.port = port;
@@ -22,6 +29,62 @@ public class CommunicationService extends Thread {
         } catch (IOException e) {
             System.out.println("\nError in Communication Service: " + e.getMessage());
         }
+    }
+
+    public static int getNumberOfComputedOperations() {
+        return numberOfComputedOperations;
+    }
+
+    public static void setNumberOfComputedOperations(int numberOfComputedOperations) {
+        CommunicationService.numberOfComputedOperations = numberOfComputedOperations;
+    }
+
+    public static int getNumberOfAddOperations() {
+        return numberOfAddOperations;
+    }
+
+    public static void setNumberOfAddOperations(int numberOfAddOperations) {
+        CommunicationService.numberOfAddOperations = numberOfAddOperations;
+    }
+
+    public static int getNumberOfSubOperations() {
+        return numberOfSubOperations;
+    }
+
+    public static void setNumberOfSubOperations(int numberOfSubOperations) {
+        CommunicationService.numberOfSubOperations = numberOfSubOperations;
+    }
+
+    public static int getNumberOfMulOperations() {
+        return numberOfMulOperations;
+    }
+
+    public static void setNumberOfMulOperations(int numberOfMulOperations) {
+        CommunicationService.numberOfMulOperations = numberOfMulOperations;
+    }
+
+    public static int getNumberOfDivOperations() {
+        return numberOfDivOperations;
+    }
+
+    public static void setNumberOfDivOperations(int numberOfDivOperations) {
+        CommunicationService.numberOfDivOperations = numberOfDivOperations;
+    }
+
+    public static int getNumberOfWrongOperations() {
+        return numberOfWrongOperations;
+    }
+
+    public static void setNumberOfWrongOperations(int numberOfWrongOperations) {
+        CommunicationService.numberOfWrongOperations = numberOfWrongOperations;
+    }
+
+    public static int getSumOfAllResults() {
+        return sumOfAllResults;
+    }
+
+    public static void setSumOfAllResults(int sumOfAllResults) {
+        CommunicationService.sumOfAllResults = sumOfAllResults;
     }
 
     private static class ClientHandler extends Thread {
@@ -50,6 +113,8 @@ public class CommunicationService extends Thread {
                         out.newLine();
                         out.flush();
                         System.out.println("\nReceived invalid message: " + message + " from " + clientAddressAndPort);
+
+                        numberOfWrongOperations++;
                         continue;
                     }
 
@@ -65,6 +130,8 @@ public class CommunicationService extends Thread {
                         out.newLine();
                         out.flush();
                         System.out.println("\nReceived invalid arguments from " + clientAddressAndPort);
+
+                        numberOfWrongOperations++;
                         continue;
                     }
 
@@ -75,16 +142,19 @@ public class CommunicationService extends Thread {
                         case "ADD":
                             System.out.println("\nReceived valid ADD operation from " + clientAddressAndPort);
                             result = firstNumber + secondNumber;
+                            numberOfAddOperations++;
                         break;
 
                         case "SUB":
                             System.out.println("\nReceived valid SUB operation from " + clientAddressAndPort);
                             result = firstNumber - secondNumber;
+                            numberOfSubOperations++;
                         break;
 
                         case "MUL":
                             System.out.println("\nReceived valid MUL operation from " + clientAddressAndPort);
                             result = firstNumber * secondNumber;
+                            numberOfMulOperations++;
                         break;
 
                         case "DIV":
@@ -93,6 +163,8 @@ public class CommunicationService extends Thread {
                                 out.newLine();
                                 out.flush();
                                 System.out.println("\nReceived invalid DIV operation from " + clientAddressAndPort);
+
+                                numberOfWrongOperations++;
                                 continue;
                             }
 
@@ -103,12 +175,18 @@ public class CommunicationService extends Thread {
                             out.write("Result of " + operation + ": " + result + ", Rest from division: " + restFromDivision);
                             out.newLine();
                             out.flush();
+
+                            sumOfAllResults += result;
+                            numberOfDivOperations++;
+                            numberOfComputedOperations++;
                         continue;
 
                         default:
                             out.write("Invalid operation: " + operation);
                             out.newLine();
                             out.flush();
+
+                            numberOfWrongOperations++;
                             System.out.println("\nReceived invalid operation: " + operation + " from " + clientAddressAndPort);
                         continue;
                     }
@@ -116,6 +194,9 @@ public class CommunicationService extends Thread {
                     out.write("Result of " + operation + ": " + result);
                     out.newLine();
                     out.flush();
+
+                    sumOfAllResults += result;
+                    numberOfComputedOperations++;
                 }
             } catch (IOException e) {
                 System.out.println("\nError in Communication Service: " + e.getMessage());

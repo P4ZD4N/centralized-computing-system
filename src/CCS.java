@@ -26,9 +26,11 @@ public class CCS {
 
         Thread ccsFindingServiceThread = new Thread(() -> runCCSFindingService(port));
         Thread communicationServiceThread = new Thread(() -> runCommunicationService(port));
+        Thread statisticsServiceThread = new Thread(CCS::runStatisticsService);
 
         ccsFindingServiceThread.start();
         communicationServiceThread.start();
+        statisticsServiceThread.start();
 
         System.out.println("Services are running on port " + port + "...");
     }
@@ -41,5 +43,10 @@ public class CCS {
     private static void runCommunicationService(int port) {
         CommunicationService communicationService = new CommunicationService(port);
         communicationService.start();
+    }
+
+    private static void runStatisticsService() {
+        StatisticsService statisticsService = new StatisticsService();
+        statisticsService.start();
     }
 }

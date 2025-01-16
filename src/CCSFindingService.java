@@ -6,6 +6,7 @@ import java.net.InetAddress;
 public class CCSFindingService {
 
     private final int port;
+    private static int numberOfConnectedClients;
 
     public CCSFindingService(int port) {
         this.port = port;
@@ -50,9 +51,18 @@ public class CCSFindingService {
                 socket.send(responsePacket);
 
                 System.out.println("\nReceived valid message from " + senderAddress.getHostAddress() + ":" + senderPort);
+                numberOfConnectedClients++;
             }
         } catch (IOException e) {
             System.out.println("\nError in CCS Finding Service: " + e.getMessage());
         }
+    }
+
+    public static int getNumberOfConnectedClients() {
+        return numberOfConnectedClients;
+    }
+
+    public static void setNumberOfConnectedClients(int numberOfConnectedClients) {
+        CCSFindingService.numberOfConnectedClients = numberOfConnectedClients;
     }
 }
