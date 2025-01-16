@@ -24,11 +24,22 @@ public class CCS {
             System.out.println("Port " + port + " is not available!");
         }
 
-        runCCSFindingService(port);
+        Thread ccsFindingServiceThread = new Thread(() -> runCCSFindingService(port));
+        Thread communicationServiceThread = new Thread(() -> runCommunicationService(port));
+
+        ccsFindingServiceThread.start();
+        communicationServiceThread.start();
+
+        System.out.println("Services are running on port " + port + "...");
     }
 
     private static void runCCSFindingService(int port) {
         CCSFindingService ccsFindingService = new CCSFindingService(port);
         ccsFindingService.start();
+    }
+
+    private static void runCommunicationService(int port) {
+        CommunicationService communicationService = new CommunicationService(port);
+        communicationService.start();
     }
 }
