@@ -29,7 +29,11 @@ public class CCSFindingService {
                 String receivedMessage = new String(packet.getData(), 0, packet.getLength()).trim();
 
                 if (!receivedMessage.startsWith("CCS DISCOVER")) {
-                    System.out.println("\nReceived invalid message: " + receivedMessage);
+                    System.out.println(
+                            "\nReceived invalid message: " +
+                            receivedMessage +
+                            " from " +
+                            senderAddress.getHostAddress() + ":" + senderPort);
                     continue;
                 }
 
@@ -45,10 +49,10 @@ public class CCSFindingService {
 
                 socket.send(responsePacket);
 
-                System.out.println("\nReceived valid message. Response sent to " + senderAddress.getHostAddress() + ":" + senderPort);
+                System.out.println("\nReceived valid message from " + senderAddress.getHostAddress() + ":" + senderPort);
             }
         } catch (IOException e) {
-            System.out.println("Error in CCS Finding Service: " + e.getMessage());
+            System.out.println("\nError in CCS Finding Service: " + e.getMessage());
         }
     }
 }
