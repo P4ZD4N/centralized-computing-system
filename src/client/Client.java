@@ -1,10 +1,7 @@
 package client;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketTimeoutException;
+import java.io.*;
+import java.net.*;
 import java.util.Scanner;
 
 public class Client {
@@ -24,6 +21,11 @@ public class Client {
             return;
         }
 
+        InetAddress serverAddress = findServerAddress(port);
+        sendOperationsToServer(serverAddress, port);
+
+    }
+    private static InetAddress findServerAddress(int port) {
         Scanner sc = new Scanner(System.in);
         String message;
         InetAddress serverAddress = null;
@@ -31,19 +33,19 @@ public class Client {
         try {
             byte[] buffer = new byte[1024];
 
-            try (DatagramSocket socket = new DatagramSocket()) {
-                socket.setSoTimeout(3000);
+            try (DatagramSocket udpSocket = new DatagramSocket()) {
+                udpSocket.setSoTimeout(3000);
 
                 while (serverAddress == null) {
                     System.out.print("\nEnter message: ");
                     message = sc.nextLine();
 
-                    broadcastMessage(socket, message, port);
+                    broadcastMessage(udpSocket, message, port);
 
                     DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
 
                     try {
-                        socket.receive(packet);
+                        udpSocket.receive(packet);
                         serverAddress = packet.getAddress();
 
                         String responseContent = new String(packet.getData(), 0, packet.getLength()).trim();
@@ -56,6 +58,8 @@ public class Client {
         } catch (IOException e) {
             System.out.println("Error in client: " + e.getMessage());
         }
+
+        return serverAddress;
     }
 
     private static void broadcastMessage(DatagramSocket socket, String message, int port) throws IOException {
@@ -71,6 +75,38 @@ public class Client {
         socket.setBroadcast(true);
         socket.send(broadcastPacket);
         System.out.println("Broadcasted message: " + message);
+    }
+
+    private static void sendOperationsToServer(InetAddress serverAddress, int port) {
+        System.out.println("Connected with server on address: " + serverAddress.getHostAddress() + ":" + port);
+
+        Scanner sc = new Scanner(System.in);
+        String operation;
+
+        try (Socket tcpSocket = new Socket(serverAddress, port);
+             BufferedReader in = new BufferedReader(new InputStreamReader(tcpSocket.getInputStream()));
+             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(tcpSocket.getOutputStream()));
+        ) {
+            tcpSocket.setSoTimeout(3000);
+
+            while (true) {
+                System.out.print("\nEnter operation: ");
+                operation = sc.nextLine();
+
+                try {
+                    out.write(operation);
+                    out.newLine();
+                    out.flush();
+
+                    String serverResponse = in.readLine();
+                    if (serverResponse != null) System.out.println(serverResponse);
+                } catch (SocketTimeoutException e) {
+                    System.out.println("No response received within 3 seconds. Please try again!");
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("\nError in client: " + e.getMessage());
+        }
     }
 }
 
