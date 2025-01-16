@@ -1,0 +1,2 @@
+public class CommunicationService {
+}

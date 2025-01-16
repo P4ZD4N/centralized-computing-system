@@ -18,12 +18,10 @@ public class CCS {
             return;
         }
 
-        System.out.println("Hello, World!");
-
         try (DatagramSocket socket = new DatagramSocket(port)) {
             System.out.println("Port " + port + " is available!");
         } catch (SocketException e) {
-            System.out.println("Port " + port + " is available!");
+            System.out.println("Port " + port + " is not available!");
         }
 
         runCCSFindingService(port);
