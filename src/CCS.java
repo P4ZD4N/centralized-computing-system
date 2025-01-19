@@ -1,4 +1,6 @@
+import java.io.IOException;
 import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.net.SocketException;
 
 public class CCS {
@@ -18,10 +20,15 @@ public class CCS {
             return;
         }
 
-        try (DatagramSocket socket = new DatagramSocket(port)) {
+        try (DatagramSocket socket = new DatagramSocket(port);
+             ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Port " + port + " is available!");
-        } catch (SocketException e) {
+        } catch (IOException e) {
             System.out.println("Port " + port + " is not available!");
+            return;
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: Port must be integer from the range 0 - 65535!");
+            return;
         }
 
         Thread ccsFindingServiceThread = new Thread(() -> runCCSFindingService(port));
