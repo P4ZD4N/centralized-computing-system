@@ -27,7 +27,7 @@ public class StatisticsService {
                 CommunicationService.setSumOfAllResults(
                         CommunicationService.getSumOfAllResults() + CommunicationService.getSumOfAllResultsFromLast10Seconds());
 
-                System.out.println("\n---");
+                System.out.println("\n===");
                 System.out.println("Statistics since launch");
                 System.out.println("- Number of new connected clients: " + CCSFindingService.getNumberOfConnectedClients());
                 System.out.println("- Number of computed operations: " + CommunicationService.getNumberOfComputedOperations());
@@ -37,7 +37,7 @@ public class StatisticsService {
                 System.out.println("- Number of DIV operations: " + CommunicationService.getNumberOfDivOperations());
                 System.out.println("- Number of wrong operations: " + CommunicationService.getNumberOfWrongOperations());
                 System.out.println("- Sum of all results: " + CommunicationService.getSumOfAllResults());
-                System.out.println("\n---");
+                System.out.println("---");
 
                 System.out.println("\n---");
                 System.out.println("Statistics from last 10 seconds");
