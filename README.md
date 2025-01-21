@@ -105,3 +105,31 @@ Run client
 ```bash
 java client.Client <port>
 ```
+
+
+## 📺 Demo
+
+GIF below presents compilation of server app, client and way to create JAR file.
+![](./demo/1.gif)
+
+On the screen below, firstly I launched server with proper command. Port 2000 was available so server started successfully. We can see, that all services was also started, each on different thread. Then I runned launched client and sent wrong message to the server. Server received this message (what is confirmed by log), but didn't send response. Client has timed out and asks for the next message.
+![](./demo/2.png)
+
+Now I entered correct message (which starts with CCS DISCOVER) and client has connected with the server. It is confirmed in the first server log, which you can see on screen below. Client sent two operations: ADD 2 3 and MUL 2 2. Server received these operations. Then calculated and sent correct results. Server saved these operations and displayed it in statistics.
+![](./demo/3.png)
+
+Second client has been started. Client connected with server without obstacles and sent two another operations: SUB 3 2 and ADD 2 1. It shows, that server can handle many clients connected at the same time.
+![](./demo/4.png)
+
+Image below presents server logs after sending operations from second client. We can see, that server received them and now number of new connected clients since launch is equal 2.
+![](./demo/5.png)
+
+Statistics updated after receiving second operation from second client: ADD 2 1
+![](./demo/6.png)
+
+Now third client has been started (on different machine!). As you can see it is no problem for server. Client has connected with server properly and sent a couple of operations.
+![](./demo/7.png)
+
+Let's go back and see, whether server logs match. And everything indicates that yes!
+![](./demo/8.png)
+![](./demo/9.png)
