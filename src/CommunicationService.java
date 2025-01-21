@@ -200,6 +200,13 @@ public class CommunicationService extends Thread {
                 }
             } catch (IOException e) {
                 System.out.println("\nError in Communication Service: " + e.getMessage());
+            } finally {
+                try {
+                    clientSocket.close();
+                    System.out.println("\nConnection with " + clientAddressAndPort + " closed.");
+                } catch (IOException e) {
+                    System.out.println("\nError while closing the socket: " + e.getMessage());
+                }
             }
         }
     }
