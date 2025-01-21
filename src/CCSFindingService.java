@@ -7,6 +7,7 @@ public class CCSFindingService {
 
     private final int port;
     private static int numberOfConnectedClients;
+    private static int numberOfConnectedClientsFromLast10Seconds;
 
     public CCSFindingService(int port) {
         this.port = port;
@@ -51,7 +52,7 @@ public class CCSFindingService {
                 socket.send(responsePacket);
 
                 System.out.println("\nReceived valid message from " + senderAddress.getHostAddress() + ":" + senderPort);
-                numberOfConnectedClients++;
+                numberOfConnectedClientsFromLast10Seconds++;
             }
         } catch (IOException e) {
             System.out.println("\nError in CCS Finding Service: " + e.getMessage());
@@ -64,5 +65,13 @@ public class CCSFindingService {
 
     public static void setNumberOfConnectedClients(int numberOfConnectedClients) {
         CCSFindingService.numberOfConnectedClients = numberOfConnectedClients;
+    }
+
+    public static int getNumberOfConnectedClientsFromLast10Seconds() {
+        return numberOfConnectedClientsFromLast10Seconds;
+    }
+
+    public static void setNumberOfConnectedClientsFromLast10Seconds(int numberOfConnectedClientsFromLast10Seconds) {
+        CCSFindingService.numberOfConnectedClientsFromLast10Seconds = numberOfConnectedClientsFromLast10Seconds;
     }
 }

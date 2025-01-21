@@ -5,6 +5,7 @@ import java.net.Socket;
 public class CommunicationService extends Thread {
 
     private final int port;
+
     private static int numberOfComputedOperations;
     private static int numberOfAddOperations;
     private static int numberOfSubOperations;
@@ -12,6 +13,14 @@ public class CommunicationService extends Thread {
     private static int numberOfDivOperations;
     private static int numberOfWrongOperations;
     private static int sumOfAllResults;
+
+    private static int numberOfComputedOperationsFromLast10Seconds;
+    private static int numberOfAddOperationsFromLast10Seconds;
+    private static int numberOfSubOperationsFromLast10Seconds;
+    private static int numberOfMulOperationsFromLast10Seconds;
+    private static int numberOfDivOperationsFromLast10Seconds;
+    private static int numberOfWrongOperationsFromLast10Seconds;
+    private static int sumOfAllResultsFromLast10Seconds;
 
     public CommunicationService(int port) {
         this.port = port;
@@ -87,6 +96,62 @@ public class CommunicationService extends Thread {
         CommunicationService.sumOfAllResults = sumOfAllResults;
     }
 
+    public static int getNumberOfComputedOperationsFromLast10Seconds() {
+        return numberOfComputedOperationsFromLast10Seconds;
+    }
+
+    public static void setNumberOfComputedOperationsFromLast10Seconds(int numberOfComputedOperationsFromLast10Seconds) {
+        CommunicationService.numberOfComputedOperationsFromLast10Seconds = numberOfComputedOperationsFromLast10Seconds;
+    }
+
+    public static int getNumberOfAddOperationsFromLast10Seconds() {
+        return numberOfAddOperationsFromLast10Seconds;
+    }
+
+    public static void setNumberOfAddOperationsFromLast10Seconds(int numberOfAddOperationsFromLast10Seconds) {
+        CommunicationService.numberOfAddOperationsFromLast10Seconds = numberOfAddOperationsFromLast10Seconds;
+    }
+
+    public static int getNumberOfSubOperationsFromLast10Seconds() {
+        return numberOfSubOperationsFromLast10Seconds;
+    }
+
+    public static void setNumberOfSubOperationsFromLast10Seconds(int numberOfSubOperationsFromLast10Seconds) {
+        CommunicationService.numberOfSubOperationsFromLast10Seconds = numberOfSubOperationsFromLast10Seconds;
+    }
+
+    public static int getNumberOfMulOperationsFromLast10Seconds() {
+        return numberOfMulOperationsFromLast10Seconds;
+    }
+
+    public static void setNumberOfMulOperationsFromLast10Seconds(int numberOfMulOperationsFromLast10Seconds) {
+        CommunicationService.numberOfMulOperationsFromLast10Seconds = numberOfMulOperationsFromLast10Seconds;
+    }
+
+    public static int getNumberOfDivOperationsFromLast10Seconds() {
+        return numberOfDivOperationsFromLast10Seconds;
+    }
+
+    public static void setNumberOfDivOperationsFromLast10Seconds(int numberOfDivOperationsFromLast10Seconds) {
+        CommunicationService.numberOfDivOperationsFromLast10Seconds = numberOfDivOperationsFromLast10Seconds;
+    }
+
+    public static int getNumberOfWrongOperationsFromLast10Seconds() {
+        return numberOfWrongOperationsFromLast10Seconds;
+    }
+
+    public static void setNumberOfWrongOperationsFromLast10Seconds(int numberOfWrongOperationsFromLast10Seconds) {
+        CommunicationService.numberOfWrongOperationsFromLast10Seconds = numberOfWrongOperationsFromLast10Seconds;
+    }
+
+    public static int getSumOfAllResultsFromLast10Seconds() {
+        return sumOfAllResultsFromLast10Seconds;
+    }
+
+    public static void setSumOfAllResultsFromLast10Seconds(int sumOfAllResultsFromLast10Seconds) {
+        CommunicationService.sumOfAllResultsFromLast10Seconds = sumOfAllResultsFromLast10Seconds;
+    }
+
     private static class ClientHandler extends Thread {
 
         private final Socket clientSocket;
@@ -114,7 +179,7 @@ public class CommunicationService extends Thread {
                         out.flush();
                         System.out.println("\nReceived invalid message: " + message + " from " + clientAddressAndPort);
 
-                        numberOfWrongOperations++;
+                        numberOfWrongOperationsFromLast10Seconds++;
                         continue;
                     }
 
@@ -131,7 +196,7 @@ public class CommunicationService extends Thread {
                         out.flush();
                         System.out.println("\nReceived invalid arguments from " + clientAddressAndPort);
 
-                        numberOfWrongOperations++;
+                        numberOfWrongOperationsFromLast10Seconds++;
                         continue;
                     }
 
@@ -142,19 +207,19 @@ public class CommunicationService extends Thread {
                         case "ADD":
                             System.out.println("\nReceived valid ADD operation from " + clientAddressAndPort);
                             result = firstNumber + secondNumber;
-                            numberOfAddOperations++;
+                            numberOfAddOperationsFromLast10Seconds++;
                         break;
 
                         case "SUB":
                             System.out.println("\nReceived valid SUB operation from " + clientAddressAndPort);
                             result = firstNumber - secondNumber;
-                            numberOfSubOperations++;
+                            numberOfSubOperationsFromLast10Seconds++;
                         break;
 
                         case "MUL":
                             System.out.println("\nReceived valid MUL operation from " + clientAddressAndPort);
                             result = firstNumber * secondNumber;
-                            numberOfMulOperations++;
+                            numberOfMulOperationsFromLast10Seconds++;
                         break;
 
                         case "DIV":
@@ -164,7 +229,7 @@ public class CommunicationService extends Thread {
                                 out.flush();
                                 System.out.println("\nReceived invalid DIV operation from " + clientAddressAndPort);
 
-                                numberOfWrongOperations++;
+                                numberOfWrongOperationsFromLast10Seconds++;
                                 continue;
                             }
 
@@ -176,9 +241,9 @@ public class CommunicationService extends Thread {
                             out.newLine();
                             out.flush();
 
-                            sumOfAllResults += result;
-                            numberOfDivOperations++;
-                            numberOfComputedOperations++;
+                            sumOfAllResultsFromLast10Seconds += result;
+                            numberOfDivOperationsFromLast10Seconds++;
+                            numberOfComputedOperationsFromLast10Seconds++;
                         continue;
 
                         default:
@@ -186,7 +251,7 @@ public class CommunicationService extends Thread {
                             out.newLine();
                             out.flush();
 
-                            numberOfWrongOperations++;
+                            numberOfWrongOperationsFromLast10Seconds++;
                             System.out.println("\nReceived invalid operation: " + operation + " from " + clientAddressAndPort);
                         continue;
                     }
@@ -195,11 +260,12 @@ public class CommunicationService extends Thread {
                     out.newLine();
                     out.flush();
 
-                    sumOfAllResults += result;
-                    numberOfComputedOperations++;
+                    sumOfAllResultsFromLast10Seconds += result;
+                    numberOfComputedOperationsFromLast10Seconds++;
                 }
             } catch (IOException e) {
-                System.out.println("\nError in Communication Service: " + e.getMessage());
+                if (!e.getMessage().contains("Connection reset") || !e.getMessage().contains("Connection closed"))
+                    System.out.println("\nError in Communication Service: " + e.getMessage());
             } finally {
                 try {
                     clientSocket.close();
